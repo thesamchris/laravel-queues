@@ -14,6 +14,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    \App\Jobs\SendWelcomeEmail::dispatch();
+    for ($i = 0; $i < 100; $i++) {
+        \App\Jobs\SendWelcomeEmail::dispatch();
+    }
+
+    \App\Jobs\ProcessPayment::dispatch()->onQueue('payments');
+
     return view('welcome');
 });
