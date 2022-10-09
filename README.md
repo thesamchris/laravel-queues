@@ -15,3 +15,7 @@ notes on jobs
 11. `php artisan queue:retry <failed_job_uuid>` can be used to add a failed job back into the queue so that it can be picked up by a worker
 12. `failed($e)` is called after the job fails with error passed to it
 13. `->delay(T)`, delay the job by T seconds
+14.  Workflow is a group of jobs.
+14. `$chain = [new Job1(), new Job2(), new Job3()]` runs a chain of jobs where Job1, Job2 and Job3 run synchronously in-order and will fail to run if the previous job fails. Note, we need to use the Bus Facade, `Bus::chain($chain)->dispatch()`
+15. `$batch = [new Job1('a'), new Job1('b'), new Job1('c')]` runs a batch of jobs such that the three jobs run in parallel, asynchronously. Note, we need to add `Batchable` property to the job and use `$this->batch()->cancelled()` in the job's `handle()` to determine if the batch has been cancelled. Also, need to use the Bus Facade `Bus::batch($batch)->allowFailures()->dispatch()`.
+    15.1. Need to add the batches table, `php artisan queue:batches-table`
